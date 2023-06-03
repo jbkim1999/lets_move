@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -13,58 +13,112 @@ const Home = () => {
 
     const [moneyLeft, setMoneyLeft] = useState(1000); // Initialize money left
 
+    // Initialize hero's equipment with null values
+    const [equippedItems, setEquippedItems] = useState({
+        head: {
+            img: null,
+            title: null,
+            type: "head"
+        },
+        body: {
+            img: null,
+            title: null,
+            type: "body"
+        },
+        leftArm: {
+            img: null,
+            title: null,
+            type: "leftArm"
+        },
+        rightArm: {
+            img: null,
+            title: null,
+            type: "rightArm"
+        },
+        legs: {
+            img: null,
+            title: null,
+            type: "ledgs"
+        },
+    });
+
+    const handleEquipItem = (item) => {
+        // Equip item to the corresponding slot in the hero's equipment
+        setEquippedItems((prevEquippedItems) => ({
+            ...prevEquippedItems,
+            [item.type]: item,
+        }));
+        console.log(equippedItems)
+    };
+
+    useEffect(() => {
+        console.log(equippedItems);
+    }, [equippedItems]);
+
     const handleAddItems = () => {
-        console.log("Something to be done")
+        console.log("Something to be done with api")
     };
 
     const itemData = [
         {
             img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
             title: 'Breakfast',
+            type: "head"
         },
         {
             img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
             title: 'Burger',
+            type: "head"
         },
         {
             img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
             title: 'Camera',
+            type: "body"
         },
         {
             img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
             title: 'Coffee',
+            type: "body"
         },
         {
             img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
             title: 'Hats',
+            type: "body"
         },
         {
             img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
             title: 'Honey',
+            type: "legs"
         },
         {
             img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
             title: 'Basketball',
+            type: "legs"
         },
         {
             img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
             title: 'Fern',
+            type: "leftArm"
         },
         {
             img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
             title: 'Mushrooms',
+            type: "leftArm"
         },
         {
             img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
             title: 'Tomato basil',
+            type: "rightArm"
         },
         {
             img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
             title: 'Sea star',
+            type: "rightArm"
         },
         {
             img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
             title: 'Bike',
+            type: "head"
         },
     ];
 
@@ -92,14 +146,20 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
-                    <Box sx={{ // head
-                        backgroundColor: "white",
-                        height: "50px",
-                        width: "50px"
-                    }}>
-                    </Box>
-                    <Box sx={{ // body
-                        backgroundColor: "white",
+                    {
+                        equippedItems.head.img == null ?
+                            <Box sx={{ // head
+                                bgcolor: "white", height: "50px", width: "50px"
+                            }} >
+                            </Box>
+                            :
+                            <Box sx={{ // head
+                                bgcolor: "white", height: "50px", width: "50px"
+                            }} >
+                                <img src={equippedItems.head.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                            </Box>
+                    }
+                    <Box sx={{
                         height: "100px",
                         width: "175px",
                         marginTop: 2,
@@ -107,25 +167,77 @@ const Home = () => {
                         justifyContent: 'center',
                         alignItems: "flex-end"
                     }}>
-                        <Box sx={{ bgcolor: colors.primary[400], height: "100px", width: "10px", marginRight: 12 }} />
-                        <Box sx={{ bgcolor: colors.primary[400], height: "100px", width: "10px" }} />
+                        {
+                            equippedItems.leftArm.img == null ?
+                                <Box sx={{ // left-arm
+                                    bgcolor: "white", height: "100px", width: "25px"
+                                }} >
+                                </Box>
+                                :
+                                <Box sx={{ // left-arm
+                                    bgcolor: "white", height: "100px", width: "25px"
+                                }} >
+                                    <img src={equippedItems.leftArm.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                </Box>
+                        }
+                        {
+                            equippedItems.body.img == null ?
+                                <Box sx={{ // body
+                                    bgcolor: "white", height: "100px", width: "100px", marginLeft: 1, marginRight: 1
+                                }} >
+                                </Box>
+                                :
+                                <Box sx={{ // body
+                                    bgcolor: "white", height: "100px", width: "100px", marginLeft: 1, marginRight: 1
+                                }} >
+                                    <img src={equippedItems.body.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                </Box>
+                        }
+                        {
+                            equippedItems.leftArm.img == null ?
+                                <Box sx={{ // right-arm
+                                    bgcolor: "white", height: "100px", width: "25px"
+                                }} >
+                                </Box>
+                                :
+                                <Box sx={{ // right-arm
+                                    bgcolor: "white", height: "100px", width: "25px"
+                                }} >
+                                    <img src={equippedItems.rightArm.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                </Box>
+                        }
                     </Box>
-                    <Box sx={{ // legs
-                        backgroundColor: "white",
-                        height: "175px",
-                        width: "100px",
-                        marginTop: 2,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: "flex-end"
-                    }}>
-                        <Box sx={{
-                            backgroundColor: colors.primary[400],
-                            width: "10px",
-                            height: "175px"
-                        }}
-                        />
-                    </Box>
+                    {
+                        equippedItems.legs.img == null ?
+                            <Box sx={{ // legs
+                                backgroundColor: "white",
+                                height: "175px",
+                                width: "100px",
+                                marginTop: 2,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: "flex-end"
+                            }}>
+                                <Box sx={{
+                                    backgroundColor: colors.primary[400],
+                                    width: "10px",
+                                    height: "175px"
+                                }}></Box>
+                            </Box>
+                            :
+                            <Box sx={{ // legs
+                                backgroundColor: "white",
+                                height: "175px",
+                                width: "100px",
+                                marginTop: 2,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: "flex-end"
+                            }}>
+                                <img src={equippedItems.legs.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                            </Box>
+                    }
+
                     <Box sx={{
                         bgcolor: "black",
                         width: "500px",
@@ -196,6 +308,7 @@ const Home = () => {
                                         height: '100%',
                                         width: 'auto',
                                     }}
+                                    onClick={() => handleEquipItem(item)}
                                 />
                             </Box>
                         ))}
