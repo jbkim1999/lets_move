@@ -1,4 +1,4 @@
-# Let's Move - SUI Move Language API Tutorial (Hackathon Edition)
+# Shall We Move - SUI Move Language API Tutorial (Hackathon Edition)
 
 Welcome to our hackathon project! We've developed a tutorial website for the SUI Move Language API. This interactive tutorial primarily focuses on teaching users to buy Non-Fungible Tokens (NFTs) in gaming marketplaces using the API.
 
