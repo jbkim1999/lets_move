@@ -134,23 +134,22 @@ const Home = () => {
     ]
 
     return (
-        <Box
-            display="grid"
-            gridTemplateColumns="repeat(14,1fr)"
-            gridAutoRows={{ xs: "100px", lg: "1fr" }}
-            gap="20px"
-            marginTop={2}
-            height="71.5vh"
-        >
-            <Box
-                gridColumn={{ xs: "span 14", lg: "span 4" }}
-                gridRow={{ xs: "span 3", lg: "span 4" }}
-                backgroundColor={colors.primary[400]}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                borderRadius="2%"
-            >
+        <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '71.5vh',
+            marginTop: 2,
+            width: "100%",
+            marginLeft: 2
+        }}>
+            <Box sx={{
+                display: 'grid',
+                gridTemplateColumns: { xs: 'repeat(1, 1fr)', lg: 'repeat(2, 1fr)' },
+                gap: theme.spacing(5),
+                height: '100%',
+                width: '100%',
+            }}>
                 <Box sx={{ // human block
                     backgroundColor: colors.primary[400],
                     display: 'flex',
@@ -252,18 +251,7 @@ const Home = () => {
                                 <img src={equippedItems.legs.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                             </Box>
                     }
-                </Box>
-                <Box
-                    gridColumn={{ xs: "span 14", lg: "span 5" }}
-                    gridRow="span 3"
-                    backgroundColor={colors.primary[400]}
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius="2%"
-                    padding={3}
-                >
+
                     <h3>Move command line: </h3>
                     <Box sx={{
                         bgcolor: colors.grey[900],
@@ -278,6 +266,7 @@ const Home = () => {
                         <h3>Move command line to be printed...</h3>
                     </Box>
                 </Box>
+
 
                 <Box sx={{ // shopping block and table block
                     backgroundColor: colors.primary[400],
