@@ -6,12 +6,102 @@ import { useTheme, styled } from '@mui/material/styles';
 import { tokens } from "../theme"
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+// import { JsonRpcProvider, testnetConnection } from '@mysten/sui.js';
+import axios from 'axios';
+
+import image_1 from "../assets/1.png";
+import image_2 from "../assets/2.png";
+import image_3 from "../assets/3.png";
+import image_4 from "../assets/4.png";
+import image_5 from "../assets/5.png";
 
 const Home = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
-    const [moneyLeft, setMoneyLeft] = useState(1000); // Initialize money left
+    const [moneyLeft, setMoneyLeft] = useState("Loading..."); // Initialize money left
+    const [ownerObjects, setOwnerObjects] = useState([]);
+    const [playerObjects, setPlayerObjects] = useState([]);
+    // const provider = new JsonRpcProvider(testnetConnection);
+    const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
+    const storeAddress = "";
+    const playerAddress = "0xc5751e6f92fe2bae9d1f165f31d0bf014c06788c21ad4d079bc8579327ffc593";
+
+    useEffect(() => {
+        loadBalance();
+    }, []);
+
+    async function loadBalance() {
+        const response = await axios.post(testnetEndpoint, {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "suix_getBalance",
+            "params": [
+              playerAddress
+            ]
+          }, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+        setMoneyLeft(response.data.result.totalBalance);
+    }
+
+    async function loadObjects(address, isOwner) {
+        const response = await axios.post(testnetEndpoint, {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "suix_getOwnedObjects",
+            "params": [
+                address,
+                {
+                "filter": {
+                    "MatchAll": [
+                    {
+                        "StructType": "0x6b45398ec9f219f7020121ef890ade2e658d521bf180a79862d2d5145bd7e762::purchase::Item"
+                    },
+                    {
+                        "AddressOwner": address
+                    }
+                    ]
+                },
+                "options": {
+                    "showType": true,
+                    "showOwner": true,
+                    "showPreviousTransaction": false,
+                    "showDisplay": false,
+                    "showContent": true,
+                    "showBcs": false,
+                    "showStorageRebate": false
+                }
+                },
+            ]
+        });
+        // console.log(response);
+        const objects = response.data.result.data.map(e => {
+            const obj = {id: e.data.content.fields.id.id, e_type: e.data.content.fields.equipment_type};
+            return obj;
+        });
+        console.log(objects);
+        if (isOwner) {
+            setOwnerObjects(objects);
+        } else {
+            setPlayerObjects(objects);
+        }
+    }
+
+    // const handleAddBalance = async () => {
+    //     await axios.post('https://faucet.testnet.sui.io/gas', {
+    //         FixedAmountRequest: {
+    //           recipient: playerAddress
+    //         }
+    //       }, {
+    //         headers: {
+    //           'Content-Type': 'application/json'
+    //         }
+    //       });
+    //     await loadBalance();
+    // };
 
     // Initialize hero's equipment with null values
     const [equippedItems, setEquippedItems] = useState({
@@ -42,8 +132,8 @@ const Home = () => {
         },
     });
 
-    const handleBuyItem = (item) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
-        console.log(item)
+    const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
+        console.log(id)
     }
 
     const handleEquipItem = (item) => {
@@ -60,78 +150,78 @@ const Home = () => {
     }, [equippedItems]);
 
     const handleAddItems = () => {
-        console.log("Something to be done with api")
+        loadObjects("0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326", true);
     };
 
-    const handleAddBalance = () => {
-        console.log("Something to be done with api")
-    };
+    // const handleAddBalance = () => {
+    //     console.log("Something to be done with api")
+    // };
 
-    const shoppingData = [
-        {
-            img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-            title: 'Breakfast',
-            type: "head"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-            title: 'Burger',
-            type: "head"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-            title: 'Camera',
-            type: "body"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-            title: 'Coffee',
-            type: "body"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-            title: 'Hats',
-            type: "body"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-            title: 'Honey',
-            type: "legs"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-            title: 'Basketball',
-            type: "legs"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-            title: 'Fern',
-            type: "leftArm"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-            title: 'Mushrooms',
-            type: "leftArm"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-            title: 'Tomato basil',
-            type: "rightArm"
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-            title: 'Sea star',
-            type: "rightArm"
-        },
-    ];
+    // const shoppingData = [
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    //         title: 'Breakfast',
+    //         type: "head"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    //         title: 'Burger',
+    //         type: "head"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    //         title: 'Camera',
+    //         type: "body"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+    //         title: 'Coffee',
+    //         type: "body"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    //         title: 'Hats',
+    //         type: "body"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    //         title: 'Honey',
+    //         type: "legs"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+    //         title: 'Basketball',
+    //         type: "legs"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+    //         title: 'Fern',
+    //         type: "leftArm"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+    //         title: 'Mushrooms',
+    //         type: "leftArm"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
+    //         title: 'Tomato basil',
+    //         type: "rightArm"
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+    //         title: 'Sea star',
+    //         type: "rightArm"
+    //     },
+    // ];
 
-    const inventoryData = [
-        {
-            img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-            title: 'Bike',
-            type: "head"
-        },
-    ]
+    // const inventoryData = [
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    //         title: 'Bike',
+    //         type: "head"
+    //     },
+    // ]
 
     return (
         <Box sx={{
@@ -279,28 +369,50 @@ const Home = () => {
                     <Box // add item button and a money display
                         sx={{
                             display: 'flex',
-                            justifyContent: 'space-between',
+                            justifyContent: 'center',
                             alignItems: 'center',
                             width: 400
                         }}>
-                        <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
-                        <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button>
+                        <Button sx={{ margin: 2 }} variant="contained" onClick={handleAddItems}>Add Items</Button>
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
                     <ImageList // shopping list
                         sx={{ width: 400, height: 330 }} cols={3} rowHeight={164}>
-                        {shoppingData.map((item) => (
-                            <ImageListItem key={item.img}>
-                                <img
-                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                    alt={item.title}
-                                    loading="lazy"
-                                    onClick={() => handleBuyItem(item)}
-                                />
-                            </ImageListItem>
-                        ))}
+                        {ownerObjects.map((obj) => {
+                            if (obj.e_type == 1) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_1} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 2) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_2} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 3) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_3} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 4) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_4} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 5) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_5} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            }
+                        }
+                        )}
                     </ImageList>
 
                     <h3>Inventory List</h3>
@@ -313,21 +425,41 @@ const Home = () => {
                             height: 150,
                         }}
                     >
-                        {inventoryData.map((item) => (
-                            <Box key={item.img} sx={{ marginRight: 0.5 }}>
-                                <img
-                                    src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
-                                    srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                    alt={item.title}
-                                    loading="lazy"
-                                    style={{
-                                        height: '100%',
-                                        width: 'auto',
-                                    }}
-                                    onClick={() => handleEquipItem(item)}
-                                />
-                            </Box>
-                        ))}
+                        {playerObjects.map((obj) => {
+                            if (obj.e_type == 1) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_1} onClick={() => handleBuyItem(obj.id)}
+                                        />
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 2) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_2} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 3) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_3} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 4) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_4} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            } else if (obj.e_type == 5) {
+                                return (
+                                    <ImageListItem key={obj.id}>
+                                        <img src={image_5} onClick={() => handleBuyItem(obj.id)}/>
+                                    </ImageListItem>
+                                )
+                            }
+                        }
+                        )}
                     </Box>
                 </Box>
             </Box>
