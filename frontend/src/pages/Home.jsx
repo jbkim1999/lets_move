@@ -24,12 +24,12 @@ const Home = () => {
     const [playerObjects, setPlayerObjects] = useState([]);
     // const provider = new JsonRpcProvider(testnetConnection);
     const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
-    const ownerAddress = "0x607a0ee509be5ec5228c3123e2f59a66401b7a9e43c31ab9842a4cc7688bc6b9";
-    const playerAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
+    const storeAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
+    const playerAddress = "0xc5751e6f92fe2bae9d1f165f31d0bf014c06788c21ad4d079bc8579327ffc593";
 
     useEffect(() => {
         loadBalance();
-        loadObjects(ownerAddress, true);
+        loadObjects(storeAddress, true);
         loadObjects(playerAddress, false);
     }, []);
 

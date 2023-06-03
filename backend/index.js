@@ -7,7 +7,7 @@ const port = 3000;
 app.use(cors()); // add this line
 
 app.get('/run-script', (req, res) => {
-    exec('sh ./test.sh', (error, stdout, stderr) => {
+    exec('sh /Users/taewonpark/Github/Sui/builder-house/shall_we_move/backend/test.sh', (error, stdout, stderr) => {
         if (error) {
             console.warn(error);
             res.status(500).send(error);
