@@ -145,6 +145,8 @@ const Home = () => {
             url: 'http://localhost:1234/add_item',
           }).then((response) => {
             console.log(response);
+            loadObjects(config.OWNER_ADDRESS, true);
+            loadObjects(config.PLAYER_ADDRESS, false);
           }, (error) => {
             console.log(error);
           });
@@ -158,6 +160,8 @@ const Home = () => {
             url: url,
           }).then((response) => {
             console.log(response);
+            loadObjects(config.OWNER_ADDRESS, true);
+            loadObjects(config.PLAYER_ADDRESS, false);
           }, (error) => {
             console.log(error);
           });
