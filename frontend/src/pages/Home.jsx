@@ -43,6 +43,7 @@ const Home = () => {
               'Content-Type': 'application/json',
             },
           });
+          // console.log(response)
         setMoneyLeft(response.data.result.totalBalance);
     }
 
@@ -142,7 +143,11 @@ const Home = () => {
     };
 
     const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
-        console.log(id)
+        console.log(id);
+    }
+
+    const getExplorerLink = (address) => {
+        return `https://suiexplorer.com/address/${address}?network=testnet`;
     }
 
     return (
@@ -169,6 +174,13 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
+                    <Button variant="contained" 
+                        sx={{
+                            alignSelf: "flex-end"
+                        }}
+                        href={getExplorerLink(config.PLAYER_ADDRESS)}>
+                        View in Explorer
+                    </Button>
                     <h2>Player <br/> ({config.PLAYER_ADDRESS})</h2>
                     {
                         // head
@@ -292,6 +304,13 @@ const Home = () => {
                     padding: theme.spacing(3),
                 }}>
 
+                    <Button variant="contained" 
+                        sx={{
+                            alignSelf: "flex-end"
+                        }}
+                        href={getExplorerLink(config.OWNER_ADDRESS)}>
+                        View in Explorer
+                    </Button>
                     <h2> Shop Owner's List <br/> ({config.OWNER_ADDRESS}) </h2>
                     <Box // add item button and a money display
                         sx={{
@@ -302,8 +321,8 @@ const Home = () => {
                         }}>
                         <Button variant="contained" onClick={() => refreshList(config.OWNER_ADDRESS)}>Refresh List</Button>
                         <Button variant="contained" onClick={handleAddItems}>Add Items</Button>
+                        <Typography variant="h6">Player's balance: {moneyLeft}</Typography>
                         {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
-                        <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
                     <ImageList // shopping list
