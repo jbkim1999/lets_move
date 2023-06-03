@@ -132,14 +132,22 @@ const Home = () => {
 
     const handleAddItems = () => {
         // loadObjects(playerAddress, true);
-        fetch('http://localhost:3000/run-script')
-            .then(response => response.text())
-            .then(result => {
-                console.log('Success:', result);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        // fetch('http://localhost:3000/run-script')
+        //     .then(response => response.text())
+        //     .then(result => {
+        //         console.log('Success:', result);
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
+        axios({
+            method: 'get',
+            url: 'http://localhost:1234/add_item',
+          }).then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
     };
 
     const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
