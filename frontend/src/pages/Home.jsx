@@ -42,6 +42,10 @@ const Home = () => {
         },
     });
 
+    const handleBuyItem = (item) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
+        console.log(item)
+    }
+
     const handleEquipItem = (item) => {
         // Equip item to the corresponding slot in the hero's equipment
         setEquippedItems((prevEquippedItems) => ({
@@ -59,7 +63,11 @@ const Home = () => {
         console.log("Something to be done with api")
     };
 
-    const itemData = [
+    const handleAddBalance = () => {
+        console.log("Something to be done with api")
+    };
+
+    const shoppingData = [
         {
             img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
             title: 'Breakfast',
@@ -115,12 +123,15 @@ const Home = () => {
             title: 'Sea star',
             type: "rightArm"
         },
+    ];
+
+    const inventoryData = [
         {
             img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
             title: 'Bike',
             type: "head"
         },
-    ];
+    ]
 
     return (
         <Box sx={{
@@ -146,6 +157,7 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
+                    <h3>Hero</h3>
                     {
                         equippedItems.head.img == null ?
                             <Box sx={{ // head
@@ -211,7 +223,7 @@ const Home = () => {
                         equippedItems.legs.img == null ?
                             <Box sx={{ // legs
                                 backgroundColor: "white",
-                                height: "175px",
+                                height: "150px",
                                 width: "100px",
                                 marginTop: 2,
                                 display: 'flex',
@@ -221,7 +233,7 @@ const Home = () => {
                                 <Box sx={{
                                     backgroundColor: colors.primary[400],
                                     width: "10px",
-                                    height: "175px"
+                                    height: "150px"
                                 }}></Box>
                             </Box>
                             :
@@ -238,11 +250,11 @@ const Home = () => {
                             </Box>
                     }
 
+                    <h3>Move command line: </h3>
                     <Box sx={{
                         bgcolor: "black",
                         width: "500px",
                         height: "225px",
-                        marginTop: 5,
                         borderRadius: "10px",
                         display: 'flex',
                         justifyContent: 'center',
@@ -263,41 +275,45 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
+                    <h3>Shopping List</h3>
                     <Box // add item button and a money display
                         sx={{
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            width: "82%"
+                            width: 400
                         }}>
                         <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
+                        <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button>
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
                     <ImageList // shopping list
-                        sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
-                        {itemData.map((item) => (
+                        sx={{ width: 400, height: 330 }} cols={3} rowHeight={164}>
+                        {shoppingData.map((item) => (
                             <ImageListItem key={item.img}>
                                 <img
                                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
                                     srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                                     alt={item.title}
                                     loading="lazy"
+                                    onClick={() => handleBuyItem(item)}
                                 />
                             </ImageListItem>
                         ))}
                     </ImageList>
 
+                    <h3>Inventory List</h3>
                     <Box // inventory list
                         sx={{
                             display: 'flex',
                             overflowX: 'auto',
                             flexDirection: 'row',
-                            width: 500,
+                            width: 400,
                             height: 150,
                         }}
                     >
-                        {itemData.map((item) => (
+                        {inventoryData.map((item) => (
                             <Box key={item.img} sx={{ marginRight: 0.5 }}>
                                 <img
                                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
@@ -313,7 +329,6 @@ const Home = () => {
                             </Box>
                         ))}
                     </Box>
-
                 </Box>
             </Box>
         </Box>
