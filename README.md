@@ -12,7 +12,7 @@ Welcome to our hackathon project! We've developed a tutorial website for the SUI
 
 ## Hackathon Details
 
-This project was developed as part of SUI Hackathon held on 2023/06/03. The theme of the hackathon was .
+This project was developed as part of SUI Hackathon held on 2023/06/03. The theme of the hackathon was "Working demo of Sui specific feature".
 
 ## About The Project
 
