@@ -59,6 +59,10 @@ const Home = () => {
         console.log("Something to be done with api")
     };
 
+    const handleAddBalance = () => {
+        console.log("Something to be done with api")
+    };
+
     const itemData = [
         {
             img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
@@ -268,9 +272,10 @@ const Home = () => {
                             display: 'flex',
                             justifyContent: 'space-between',
                             alignItems: 'center',
-                            width: "82%"
+                            width: 500
                         }}>
                         <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
+                        <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button>
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
