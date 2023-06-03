@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useTheme, styled } from '@mui/material/styles';
-import { tokens } from "../theme"
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-// import { JsonRpcProvider, testnetConnection } from '@mysten/sui.js';
-import axios from 'axios';
+import { tokens } from "../theme"
 
-import image_1 from "../assets/1.png";
-import image_2 from "../assets/2.png";
-import image_3 from "../assets/3.png";
-import image_4 from "../assets/4.png";
-import image_5 from "../assets/5.png";
+import axios from 'axios';
+import config from "../config.json";
 
 const Home = () => {
     const theme = useTheme();
@@ -22,24 +18,21 @@ const Home = () => {
     const [moneyLeft, setMoneyLeft] = useState("Loading..."); // Initialize money left
     const [ownerObjects, setOwnerObjects] = useState([]);
     const [playerObjects, setPlayerObjects] = useState([]);
-    // const provider = new JsonRpcProvider(testnetConnection);
-    const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
-    const ownerAddress = "0x607a0ee509be5ec5228c3123e2f59a66401b7a9e43c31ab9842a4cc7688bc6b9";
-    const playerAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
 
     useEffect(() => {
-        loadBalance();
-        loadObjects(ownerAddress, true);
-        loadObjects(playerAddress, false);
+        loadBalance(config.PLAYER_ADDRESS);
+        loadObjects(config.OWNER_ADDRESS, true);
+        loadObjects(config.PLAYER_ADDRESS, false);
     }, []);
 
-    async function loadBalance() {
-        const response = await axios.post(testnetEndpoint, {
+    /* Loads coin balance for a given account */
+    async function loadBalance(address) {
+        const response = await axios.post(config.TESTNET_ENDPOINT, {
             "jsonrpc": "2.0",
             "id": 1,
             "method": "suix_getBalance",
             "params": [
-              playerAddress
+              address
             ]
           }, {
             headers: {
@@ -49,8 +42,9 @@ const Home = () => {
         setMoneyLeft(response.data.result.totalBalance);
     }
 
+    /* Loads owned object information for a given account */
     async function loadObjects(address, isOwner) {
-        const response = await axios.post(testnetEndpoint, {
+        const response = await axios.post(config.TESTNET_ENDPOINT, {
             "jsonrpc": "2.0",
             "id": 1,
             "method": "suix_getOwnedObjects",
@@ -60,7 +54,7 @@ const Home = () => {
                 "filter": {
                     "MatchAll": [
                     {
-                        "StructType": "0x6b45398ec9f219f7020121ef890ade2e658d521bf180a79862d2d5145bd7e762::purchase::Item"
+                        "StructType": `${config.PACKAGE_OBJECT_ID}::purchase::Item`
                     },
                     {
                         "AddressOwner": address
@@ -92,86 +86,44 @@ const Home = () => {
         }
     }
 
-    // const handleAddBalance = async () => {
-    //     await axios.post('https://faucet.testnet.sui.io/gas', {
-    //         FixedAmountRequest: {
-    //           recipient: playerAddress
-    //         }
-    //       }, {
-    //         headers: {
-    //           'Content-Type': 'application/json'
-    //         }
-    //       });
-    //     await loadBalance();
-    // };
-
-    // Initialize hero's equipment with null values
+    /* Initializes player's equipment with null values */
     const [equippedItems, setEquippedItems] = useState({
-        "head": {
+        1: { // "head"
             img: null,
         },
-        "body": {
+        2: { // "body"
             img: null,
         },
-        "legs": {
+        3: { // "legs"
             img: null,
         },
-        "leftArm": {
+        4: { // "leftArm"
             img: null,
         },
-        "rightArm": {
+        5: { // "rightArm"
             img: null,
         }
     });
 
-    const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
-        console.log(id)
-    }
-
+    /* Equips item to the corresponding slot in the player's equipment */
     const handleEquipItem = (e_type) => {
-        // Equip item to the corresponding slot in the hero's equipment
-        if (e_type == 1) {
-            setEquippedItems((prevEquippedItems) => ({
-                ...prevEquippedItems,
-                "head": {
-                    img: image_1
-                }
-            }));
-        } else if (e_type == 2) {
-            setEquippedItems((prevEquippedItems) => ({
-                ...prevEquippedItems,
-                "body": {
-                    img: image_2
-                }
-            }));
-        } else if (e_type == 3) {
-            setEquippedItems((prevEquippedItems) => ({
-                ...prevEquippedItems,
-                "legs": {
-                    img: image_3
-                }
-            }));
-        } else if (e_type == 4) {
-            setEquippedItems((prevEquippedItems) => ({
-                ...prevEquippedItems,
-                "leftArm": {
-                    img: image_4
-                }
-            }));
-        } else if (e_type == 5) {
-            setEquippedItems((prevEquippedItems) => ({
-                ...prevEquippedItems,
-                "rightArm": {
-                    img: image_5
-                }
-            }));
-        }
-        console.log(equippedItems)
+        setEquippedItems((prevEquippedItems) => ({
+            ...prevEquippedItems,
+            [`${e_type}`]: {
+                img: require(`../assets/${e_type}.png`)
+            }
+        }))
+        // console.log(equippedItems)
     };
 
-    useEffect(() => {
-        console.log(equippedItems);
-    }, [equippedItems]);
+    // useEffect(() => {
+    //     console.log(equippedItems);
+    // }, [equippedItems]);
+
+    const refreshList = (address) => {
+        console.log(address === config.OWNER_ADDRESS);
+        loadObjects(address, address === config.OWNER_ADDRESS);
+    }
 
     const handleAddItems = () => {
         // loadObjects(playerAddress, true);
@@ -185,71 +137,9 @@ const Home = () => {
             });
     };
 
-    // const ShoppingData = [
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-    //         title: 'Breakfast',
-    //         type: 1
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-    //         title: 'Burger',
-    //         type: 1
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-    //         title: 'Camera',
-    //         type: 2
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-    //         title: 'Coffee',
-    //         type: 2
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-    //         title: 'Hats',
-    //         type: 2
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-    //         title: 'Honey',
-    //         type: 5
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-    //         title: 'Basketball',
-    //         type: 5
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-    //         title: 'Fern',
-    //         type: 3
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-    //         title: 'Mushrooms',
-    //         type: 3
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-    //         title: 'Tomato basil',
-    //         type: 4
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-    //         title: 'Sea star',
-    //         type: 4
-    //     },
-    // ];
-
-    // const InventoryData = [
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-    //         title: 'Bike',
-    //         type: "head"
-    //     },
-    // ]
+    const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
+        console.log(id)
+    }
 
     return (
         <Box sx={{
@@ -275,19 +165,19 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
-                    <h3>Hero</h3>
+                    <h2>Player <br/> ({config.PLAYER_ADDRESS})</h2>
                     {
-                        equippedItems.head.img == null ?
+                        // head
+                        equippedItems["1"].img == null ?
                             <Box sx={{ // head
                                 bgcolor: "white", height: "50px", width: "50px"
                             }} >
                             </Box>
                             :
-                            <Box sx={{ // head
+                            <Box sx={{ 
                                 bgcolor: "white", height: "50px", width: "50px"
                             }} >
-                                {console.log("hi")}
-                                <img src={equippedItems.head.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                <img src={equippedItems["1"].img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                             </Box>
                     }
                     <Box sx={{
@@ -299,8 +189,9 @@ const Home = () => {
                         alignItems: "flex-end"
                     }}>
                         {
-                            equippedItems.leftArm.img == null ?
-                                <Box sx={{ // left-arm
+                            // left-arm
+                            equippedItems["4"].img == null ?
+                                <Box sx={{ 
                                     bgcolor: "white", height: "100px", width: "25px"
                                 }} >
                                 </Box>
@@ -308,12 +199,13 @@ const Home = () => {
                                 <Box sx={{ // left-arm
                                     bgcolor: "white", height: "100px", width: "25px"
                                 }} >
-                                    <img src={equippedItems.leftArm.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                    <img src={equippedItems["4"].img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                                 </Box>
                         }
                         {
-                            equippedItems.body.img == null ?
-                                <Box sx={{ // body
+                            // body
+                            equippedItems["2"].img == null ?
+                                <Box sx={{ 
                                     bgcolor: "white", height: "100px", width: "100px", marginLeft: 1, marginRight: 1
                                 }} >
                                 </Box>
@@ -321,12 +213,13 @@ const Home = () => {
                                 <Box sx={{ // body
                                     bgcolor: "white", height: "100px", width: "100px", marginLeft: 1, marginRight: 1
                                 }} >
-                                    <img src={equippedItems.body.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                    <img src={equippedItems["2"].img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                                 </Box>
                         }
                         {
-                            equippedItems.leftArm.img == null ?
-                                <Box sx={{ // right-arm
+                            // right-arm
+                            equippedItems["5"].img == null ?
+                                <Box sx={{ 
                                     bgcolor: "white", height: "100px", width: "25px"
                                 }} >
                                 </Box>
@@ -334,13 +227,14 @@ const Home = () => {
                                 <Box sx={{ // right-arm
                                     bgcolor: "white", height: "100px", width: "25px"
                                 }} >
-                                    <img src={equippedItems.rightArm.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                    <img src={equippedItems["5"].img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                                 </Box>
                         }
                     </Box>
                     {
-                        equippedItems.legs.img == null ?
-                            <Box sx={{ // legs
+                        // legs
+                        equippedItems["3"].img == null ?
+                            <Box sx={{ 
                                 backgroundColor: "white",
                                 height: "150px",
                                 width: "100px",
@@ -365,7 +259,7 @@ const Home = () => {
                                 justifyContent: 'center',
                                 alignItems: "flex-end"
                             }}>
-                                <img src={equippedItems.legs.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                                <img src={equippedItems["3"].img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                             </Box>
                     }
 
@@ -384,7 +278,6 @@ const Home = () => {
                     </Box>
                 </Box>
 
-
                 <Box sx={{ // shopping block and table block
                     backgroundColor: colors.primary[400],
                     display: 'flex',
@@ -394,58 +287,39 @@ const Home = () => {
                     borderRadius: '2%',
                     padding: theme.spacing(3),
                 }}>
-                    <h3>Shopping List</h3>
+
+                    <h2> Shop Owner's List <br/> ({config.OWNER_ADDRESS}) </h2>
                     <Box // add item button and a money display
                         sx={{
                             display: 'flex',
-                            justifyContent: 'center',
+                            justifyContent: 'space-between',
                             alignItems: 'center',
                             width: 400
                         }}>
-                        <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
+                        <Button variant="contained" onClick={() => refreshList(config.OWNER_ADDRESS)}>Refresh List</Button>
+                        <Button variant="contained" onClick={handleAddItems}>Add Items</Button>
                         {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
                     <ImageList // shopping list
                         sx={{ width: 400, height: 330 }} cols={3} rowHeight={164}>
-                        {ownerObjects.map((obj) => {
-                            if (obj.e_type == 1) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_1} onClick={() => handleBuyItem(obj.id)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 2) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_2} onClick={() => handleBuyItem(obj.id)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 3) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_3} onClick={() => handleBuyItem(obj.id)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 4) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_4} onClick={() => handleBuyItem(obj.id)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 5) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_5} onClick={() => handleBuyItem(obj.id)}/>
-                                    </ImageListItem>
-                                )
-                            }
-                        }
+                        {ownerObjects.map((obj) => (
+                            <ImageListItem key={obj.id}>
+                                <img src={require(`../assets/${obj.e_type}.png`)} onClick={() => handleBuyItem(obj.id)}/>
+                            </ImageListItem>       
+                        )
                         )}
                     </ImageList>
 
                     <h3>Inventory List</h3>
+                    <Button variant="contained" 
+                        sx={{
+                            marginBottom: 2
+                        }}
+                        onClick={() => refreshList(config.PLAYER_ADDRESS)}>
+                            Refresh List
+                    </Button>
                     <Box // inventory list
                         sx={{
                             display: 'flex',
@@ -455,40 +329,11 @@ const Home = () => {
                             height: 150,
                         }}
                     >
-                        {playerObjects.map((obj) => {
-                            if (obj.e_type == 1) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_1} onClick={() => handleEquipItem(obj.e_type)}
-                                        />
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 2) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_2} onClick={() => handleEquipItem(obj.e_type)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 3) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_3} onClick={() => handleEquipItem(obj.e_type)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 4) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_4} onClick={() => handleEquipItem(obj.e_type)}/>
-                                    </ImageListItem>
-                                )
-                            } else if (obj.e_type == 5) {
-                                return (
-                                    <ImageListItem key={obj.id}>
-                                        <img src={image_5} onClick={() => handleEquipItem(obj.e_type)}/>
-                                    </ImageListItem>
-                                )
-                            }
-                        }
+                        {playerObjects.map((obj) => (
+                            <ImageListItem key={obj.id}>
+                                <img src={require(`../assets/${obj.e_type}.png`)} onClick={() => handleEquipItem(obj.e_type)}/>
+                            </ImageListItem>
+                        )
                         )}
                     </Box>
                 </Box>
