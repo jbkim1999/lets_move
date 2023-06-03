@@ -6,6 +6,7 @@ import { useTheme, styled } from '@mui/material/styles';
 import { tokens } from "../theme"
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+import axios from "axios";
 
 const Home = () => {
     const theme = useTheme();
@@ -18,27 +19,27 @@ const Home = () => {
         head: {
             img: null,
             title: null,
-            type: "head"
+            type: 1
         },
         body: {
             img: null,
             title: null,
-            type: "body"
+            type: 2
         },
         leftArm: {
             img: null,
             title: null,
-            type: "leftArm"
+            type: 3
         },
         rightArm: {
             img: null,
             title: null,
-            type: "rightArm"
+            type: 4
         },
         legs: {
             img: null,
             title: null,
-            type: "ledgs"
+            type: 5
         },
     });
 
@@ -59,73 +60,81 @@ const Home = () => {
         console.log(equippedItems);
     }, [equippedItems]);
 
+
+    const [shoppingData, setShoppingData] = useState([{}])
+    const [inventortData, setInventoryData] = useState([{}])
+
     const handleAddItems = () => {
-        console.log("Something to be done with api")
+        fetch('http://localhost:3000/run-script')
+            .then(response => response.text())
+            .then(result => {
+                console.log('Success:', result);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     };
 
-    const handleAddBalance = () => {
-        console.log("Something to be done with api")
-    };
 
-    const shoppingData = [
+    const ShoppingData = [
         {
             img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
             title: 'Breakfast',
-            type: "head"
+            type: 1
         },
         {
             img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
             title: 'Burger',
-            type: "head"
+            type: 1
         },
         {
             img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
             title: 'Camera',
-            type: "body"
+            type: 2
         },
         {
             img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
             title: 'Coffee',
-            type: "body"
+            type: 2
         },
         {
             img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
             title: 'Hats',
-            type: "body"
+            type: 2
         },
         {
             img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
             title: 'Honey',
-            type: "legs"
+            type: 5
         },
         {
             img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
             title: 'Basketball',
-            type: "legs"
+            type: 5
         },
         {
             img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
             title: 'Fern',
-            type: "leftArm"
+            type: 3
         },
         {
             img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
             title: 'Mushrooms',
-            type: "leftArm"
+            type: 3
         },
         {
             img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
             title: 'Tomato basil',
-            type: "rightArm"
+            type: 4
         },
         {
             img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
             title: 'Sea star',
-            type: "rightArm"
+            type: 4
         },
     ];
 
-    const inventoryData = [
+    const InventoryData = [
         {
             img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
             title: 'Bike',
@@ -284,13 +293,13 @@ const Home = () => {
                             width: 400
                         }}>
                         <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
-                        <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button>
+                        {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
                     <ImageList // shopping list
                         sx={{ width: 400, height: 330 }} cols={3} rowHeight={164}>
-                        {shoppingData.map((item) => (
+                        {ShoppingData.map((item) => (
                             <ImageListItem key={item.img}>
                                 <img
                                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
@@ -313,7 +322,7 @@ const Home = () => {
                             height: 150,
                         }}
                     >
-                        {inventoryData.map((item) => (
+                        {InventoryData.map((item) => (
                             <Box key={item.img} sx={{ marginRight: 0.5 }}>
                                 <img
                                     src={`${item.img}?w=164&h=164&fit=crop&auto=format`}
