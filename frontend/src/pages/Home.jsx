@@ -24,11 +24,13 @@ const Home = () => {
     const [playerObjects, setPlayerObjects] = useState([]);
     // const provider = new JsonRpcProvider(testnetConnection);
     const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
-    const storeAddress = "";
-    const playerAddress = "0xc5751e6f92fe2bae9d1f165f31d0bf014c06788c21ad4d079bc8579327ffc593";
+    const ownerAddress = "0x607a0ee509be5ec5228c3123e2f59a66401b7a9e43c31ab9842a4cc7688bc6b9";
+    const playerAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
 
     useEffect(() => {
         loadBalance();
+        loadObjects(ownerAddress, true);
+        loadObjects(playerAddress, false);
     }, []);
 
     async function loadBalance() {
@@ -82,7 +84,7 @@ const Home = () => {
             const obj = {id: e.data.content.fields.id.id, e_type: e.data.content.fields.equipment_type};
             return obj;
         });
-        console.log(objects);
+        // console.log(objects);
         if (isOwner) {
             setOwnerObjects(objects);
         } else {
@@ -105,43 +107,65 @@ const Home = () => {
 
     // Initialize hero's equipment with null values
     const [equippedItems, setEquippedItems] = useState({
-        head: {
+        "head": {
             img: null,
-            title: null,
-            type: 1
         },
-        body: {
+        "body": {
             img: null,
-            title: null,
-            type: 2
         },
-        leftArm: {
+        "legs": {
             img: null,
-            title: null,
-            type: 3
         },
-        rightArm: {
+        "leftArm": {
             img: null,
-            title: null,
-            type: 4
         },
-        legs: {
+        "rightArm": {
             img: null,
-            title: null,
-            type: 5
-        },
+        }
     });
 
     const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
         console.log(id)
     }
 
-    const handleEquipItem = (item) => {
+    const handleEquipItem = (e_type) => {
         // Equip item to the corresponding slot in the hero's equipment
-        setEquippedItems((prevEquippedItems) => ({
-            ...prevEquippedItems,
-            [item.type]: item,
-        }));
+        if (e_type == 1) {
+            setEquippedItems((prevEquippedItems) => ({
+                ...prevEquippedItems,
+                "head": {
+                    img: image_1
+                }
+            }));
+        } else if (e_type == 2) {
+            setEquippedItems((prevEquippedItems) => ({
+                ...prevEquippedItems,
+                "body": {
+                    img: image_2
+                }
+            }));
+        } else if (e_type == 3) {
+            setEquippedItems((prevEquippedItems) => ({
+                ...prevEquippedItems,
+                "legs": {
+                    img: image_3
+                }
+            }));
+        } else if (e_type == 4) {
+            setEquippedItems((prevEquippedItems) => ({
+                ...prevEquippedItems,
+                "leftArm": {
+                    img: image_4
+                }
+            }));
+        } else if (e_type == 5) {
+            setEquippedItems((prevEquippedItems) => ({
+                ...prevEquippedItems,
+                "rightArm": {
+                    img: image_5
+                }
+            }));
+        }
         console.log(equippedItems)
     };
 
@@ -149,11 +173,8 @@ const Home = () => {
         console.log(equippedItems);
     }, [equippedItems]);
 
-
-    const [shoppingData, setShoppingData] = useState([{}])
-    const [inventortData, setInventoryData] = useState([{}])
-
     const handleAddItems = () => {
+        // loadObjects(playerAddress, true);
         fetch('http://localhost:3000/run-script')
             .then(response => response.text())
             .then(result => {
@@ -164,71 +185,71 @@ const Home = () => {
             });
     };
 
-    const ShoppingData = [
-        {
-            img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-            title: 'Breakfast',
-            type: 1
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-            title: 'Burger',
-            type: 1
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-            title: 'Camera',
-            type: 2
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-            title: 'Coffee',
-            type: 2
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-            title: 'Hats',
-            type: 2
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-            title: 'Honey',
-            type: 5
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-            title: 'Basketball',
-            type: 5
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-            title: 'Fern',
-            type: 3
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-            title: 'Mushrooms',
-            type: 3
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-            title: 'Tomato basil',
-            type: 4
-        },
-        {
-            img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-            title: 'Sea star',
-            type: 4
-        },
-    ];
+    // const ShoppingData = [
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+    //         title: 'Breakfast',
+    //         type: 1
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+    //         title: 'Burger',
+    //         type: 1
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+    //         title: 'Camera',
+    //         type: 2
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+    //         title: 'Coffee',
+    //         type: 2
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+    //         title: 'Hats',
+    //         type: 2
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+    //         title: 'Honey',
+    //         type: 5
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+    //         title: 'Basketball',
+    //         type: 5
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+    //         title: 'Fern',
+    //         type: 3
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+    //         title: 'Mushrooms',
+    //         type: 3
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
+    //         title: 'Tomato basil',
+    //         type: 4
+    //     },
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+    //         title: 'Sea star',
+    //         type: 4
+    //     },
+    // ];
 
-    const InventoryData = [
-        {
-            img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-            title: 'Bike',
-            type: "head"
-        },
-    ]
+    // const InventoryData = [
+    //     {
+    //         img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+    //         title: 'Bike',
+    //         type: "head"
+    //     },
+    // ]
 
     return (
         <Box sx={{
@@ -265,6 +286,7 @@ const Home = () => {
                             <Box sx={{ // head
                                 bgcolor: "white", height: "50px", width: "50px"
                             }} >
+                                {console.log("hi")}
                                 <img src={equippedItems.head.img} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
                             </Box>
                     }
@@ -437,32 +459,32 @@ const Home = () => {
                             if (obj.e_type == 1) {
                                 return (
                                     <ImageListItem key={obj.id}>
-                                        <img src={image_1} onClick={() => handleBuyItem(obj.id)}
+                                        <img src={image_1} onClick={() => handleEquipItem(obj.e_type)}
                                         />
                                     </ImageListItem>
                                 )
                             } else if (obj.e_type == 2) {
                                 return (
                                     <ImageListItem key={obj.id}>
-                                        <img src={image_2} onClick={() => handleBuyItem(obj.id)}/>
+                                        <img src={image_2} onClick={() => handleEquipItem(obj.e_type)}/>
                                     </ImageListItem>
                                 )
                             } else if (obj.e_type == 3) {
                                 return (
                                     <ImageListItem key={obj.id}>
-                                        <img src={image_3} onClick={() => handleBuyItem(obj.id)}/>
+                                        <img src={image_3} onClick={() => handleEquipItem(obj.e_type)}/>
                                     </ImageListItem>
                                 )
                             } else if (obj.e_type == 4) {
                                 return (
                                     <ImageListItem key={obj.id}>
-                                        <img src={image_4} onClick={() => handleBuyItem(obj.id)}/>
+                                        <img src={image_4} onClick={() => handleEquipItem(obj.e_type)}/>
                                     </ImageListItem>
                                 )
                             } else if (obj.e_type == 5) {
                                 return (
                                     <ImageListItem key={obj.id}>
-                                        <img src={image_5} onClick={() => handleBuyItem(obj.id)}/>
+                                        <img src={image_5} onClick={() => handleEquipItem(obj.e_type)}/>
                                     </ImageListItem>
                                 )
                             }
