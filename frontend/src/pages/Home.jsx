@@ -108,27 +108,27 @@ const Home = () => {
         head: {
             img: null,
             title: null,
-            type: "head"
+            type: 1
         },
         body: {
             img: null,
             title: null,
-            type: "body"
+            type: 2
         },
         leftArm: {
             img: null,
             title: null,
-            type: "leftArm"
+            type: 3
         },
         rightArm: {
             img: null,
             title: null,
-            type: "rightArm"
+            type: 4
         },
         legs: {
             img: null,
             title: null,
-            type: "ledgs"
+            type: 5
         },
     });
 
@@ -149,79 +149,86 @@ const Home = () => {
         console.log(equippedItems);
     }, [equippedItems]);
 
+
+    const [shoppingData, setShoppingData] = useState([{}])
+    const [inventortData, setInventoryData] = useState([{}])
+
     const handleAddItems = () => {
-        loadObjects("0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326", true);
+        fetch('http://localhost:3000/run-script')
+            .then(response => response.text())
+            .then(result => {
+                console.log('Success:', result);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     };
 
-    // const handleAddBalance = () => {
-    //     console.log("Something to be done with api")
-    // };
+    const ShoppingData = [
+        {
+            img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
+            title: 'Breakfast',
+            type: 1
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
+            title: 'Burger',
+            type: 1
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
+            title: 'Camera',
+            type: 2
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
+            title: 'Coffee',
+            type: 2
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
+            title: 'Hats',
+            type: 2
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
+            title: 'Honey',
+            type: 5
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
+            title: 'Basketball',
+            type: 5
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
+            title: 'Fern',
+            type: 3
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
+            title: 'Mushrooms',
+            type: 3
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
+            title: 'Tomato basil',
+            type: 4
+        },
+        {
+            img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
+            title: 'Sea star',
+            type: 4
+        },
+    ];
 
-    // const shoppingData = [
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1551963831-b3b1ca40c98e',
-    //         title: 'Breakfast',
-    //         type: "head"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1551782450-a2132b4ba21d',
-    //         title: 'Burger',
-    //         type: "head"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1522770179533-24471fcdba45',
-    //         title: 'Camera',
-    //         type: "body"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c',
-    //         title: 'Coffee',
-    //         type: "body"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1533827432537-70133748f5c8',
-    //         title: 'Hats',
-    //         type: "body"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62',
-    //         title: 'Honey',
-    //         type: "legs"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6',
-    //         title: 'Basketball',
-    //         type: "legs"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1518756131217-31eb79b20e8f',
-    //         title: 'Fern',
-    //         type: "leftArm"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1597645587822-e99fa5d45d25',
-    //         title: 'Mushrooms',
-    //         type: "leftArm"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1567306301408-9b74779a11af',
-    //         title: 'Tomato basil',
-    //         type: "rightArm"
-    //     },
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1471357674240-e1a485acb3e1',
-    //         title: 'Sea star',
-    //         type: "rightArm"
-    //     },
-    // ];
-
-    // const inventoryData = [
-    //     {
-    //         img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
-    //         title: 'Bike',
-    //         type: "head"
-    //     },
-    // ]
+    const InventoryData = [
+        {
+            img: 'https://images.unsplash.com/photo-1589118949245-7d38baf380d6',
+            title: 'Bike',
+            type: "head"
+        },
+    ]
 
     return (
         <Box sx={{
@@ -373,7 +380,8 @@ const Home = () => {
                             alignItems: 'center',
                             width: 400
                         }}>
-                        <Button sx={{ margin: 2 }} variant="contained" onClick={handleAddItems}>Add Items</Button>
+                        <Button variant="contained" onClick={handleAddItems}>Add Items + </Button>
+                        {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
                         <Typography variant="h6">Balance: {moneyLeft}</Typography>
                     </Box>
 
