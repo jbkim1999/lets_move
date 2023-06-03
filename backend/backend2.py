@@ -28,7 +28,7 @@ def add_item():
     os.system(command_str)
     return 1
 
-@app.get("/transfer_item")
+@app.get("/transfer")
 def transfer_item(item):
     command_str = "sui client call --package " + PACKAGE + " --module purchase --function transfer_item --args "+ item +" "+ PLAYER + " --gas-budget 10000000"
     os.system(command_str)

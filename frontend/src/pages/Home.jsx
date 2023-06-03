@@ -148,6 +148,15 @@ const Home = () => {
 
     const handleBuyItem = (id) => { // this function needs to add the item to inventoryData, and remove from shoppingData through API
         console.log(id);
+        let url = 'http://localhost:1234/transfer?item=' + id 
+        axios({
+            method: 'get',
+            url: url,
+          }).then((response) => {
+            console.log(response);
+          }, (error) => {
+            console.log(error);
+          });
     }
 
     const getExplorerLink = (address) => {
