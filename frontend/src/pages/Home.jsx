@@ -18,11 +18,15 @@ const Home = () => {
     const [moneyLeft, setMoneyLeft] = useState("Loading..."); // Initialize money left
     const [ownerObjects, setOwnerObjects] = useState([]);
     const [playerObjects, setPlayerObjects] = useState([]);
+    // const provider = new JsonRpcProvider(testnetConnection);
+    const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
+    const storeAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
+    const playerAddress = "0xc5751e6f92fe2bae9d1f165f31d0bf014c06788c21ad4d079bc8579327ffc593";
 
     useEffect(() => {
-        loadBalance(config.PLAYER_ADDRESS);
-        loadObjects(config.OWNER_ADDRESS, true);
-        loadObjects(config.PLAYER_ADDRESS, false);
+        loadBalance();
+        loadObjects(storeAddress, true);
+        loadObjects(playerAddress, false);
     }, []);
 
     /* Loads coin balance for a given account */
