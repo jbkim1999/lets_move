@@ -18,10 +18,9 @@ const Home = () => {
     const [moneyLeft, setMoneyLeft] = useState("Loading..."); // Initialize money left
     const [ownerObjects, setOwnerObjects] = useState([]);
     const [playerObjects, setPlayerObjects] = useState([]);
-    // const provider = new JsonRpcProvider(testnetConnection);
-    const testnetEndpoint = "https://sui-testnet.nodeinfra.com";
-    const storeAddress = "0x660b7586904d6278ac6ca8c980c65706af8b86750bd29edf7689ba1999108326";
-    const playerAddress = "0xc5751e6f92fe2bae9d1f165f31d0bf014c06788c21ad4d079bc8579327ffc593";
+    const [log, setLog] = useState("Sui log line to be printed...");
+
+    const [selectedOrAdded, setSelectedOrAdded] = useState(0); // selected : 0 , added : 1
 
     useEffect(() => {
         loadBalance();
@@ -123,6 +122,7 @@ const Home = () => {
             }
         }))
         setSelectedItem(id);
+        setSelectedOrAdded(0);
         // console.log(equippedItems)
     };
 
@@ -136,22 +136,15 @@ const Home = () => {
     }
 
     const handleAddItems = () => {
-        // loadObjects(playerAddress, true);
-        // fetch('http://localhost:3000/run-script')
-        //     .then(response => response.text())
-        //     .then(result => {
-        //         console.log('Success:', result);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        //     });
         axios({
             method: 'get',
             url: 'http://localhost:1234/add_item',
           }).then((response) => {
-            console.log(response);
+            console.log("add items\n",response);
+            setLog(response)
             loadObjects(config.OWNER_ADDRESS, true);
             loadObjects(config.PLAYER_ADDRESS, false);
+            setSelectedOrAdded(1);
           }, (error) => {
             console.log(error);
           });
@@ -338,18 +331,23 @@ const Home = () => {
                         View in Explorer
                     </Button>
                     <h2> Shop Owner's List <br/> ({config.OWNER_ADDRESS}) </h2>
-                    <Box // add item button and a money display
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            width: 400
-                        }}>
-                        <Button variant="contained" onClick={() => refreshList(config.OWNER_ADDRESS)}>Refresh List</Button>
-                        <Button variant="contained" onClick={handleAddItems}>Add Items</Button>
-                        <Typography variant="h6">Player's balance: {moneyLeft}</Typography>
-                        {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
+                    <Box>
+                        <Box // add item button and a money display
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: 400
+                            }}>
+                            {/* <Button variant="contained" onClick={() => refreshList(config.OWNER_ADDRESS)}>Refresh List</Button> */}
+                            <Button variant="contained" onClick={handleAddItems}>Add Items</Button>
+                            <Typography variant="h6">Player's balance: {moneyLeft}</Typography>
+                            
+                            {/* <Button variant="contained" onClick={handleAddBalance}>Add Balance + </Button> */}
+                        </Box>
+                        <Typography>{selectedOrAdded ? "Added Item" : "Selected Item"} : {selectedItem}</Typography>
                     </Box>
+                    
 
                     <ImageList // shopping list
                         sx={{ width: 400, height: 330 }} cols={3} rowHeight={164}>
@@ -362,13 +360,13 @@ const Home = () => {
                     </ImageList>
 
                     <h3>Inventory List</h3>
-                    <Button variant="contained" 
+                    {/* <Button variant="contained" 
                         sx={{
                             marginBottom: 2
                         }}
                         onClick={() => refreshList(config.PLAYER_ADDRESS)}>
                             Refresh List
-                    </Button>
+                    </Button> */}
                     <Box // inventory list
                         sx={{
                             display: 'flex',
